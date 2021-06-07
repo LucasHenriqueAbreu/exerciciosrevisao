@@ -1,22 +1,23 @@
 from time import sleep
 
+from exercicios.jogo_aventura.models.fluxo import Fluxo
 from exercicios.jogo_aventura.models.fluxo_decisao_logica import FluxoDecisaoLogica
 from exercicios.jogo_aventura.models.fluxo_normal import FluxoNormal
 
+def run_fluxo(fluxo: Fluxo):
+    if isinstance(fluxo, FluxoNormal):
+        print(fluxo.descricao)
+    elif isinstance(fluxo, FluxoDecisaoLogica):
+        print(fluxo.descricao)
+        decisao = input('Sim ou não? S/N')
+        run_fluxo(fluxo.sim if decisao in 'Ss' else fluxo.nao)
+
 def rodar_historia(historias: list):
     for fluxo in historias:
-        if isinstance(fluxo, FluxoNormal):
-            print(fluxo.descricao)
-        elif isinstance(fluxo, FluxoDecisaoLogica):
-            print(fluxo.descricao)
-            decisao = input('Sim ou não? S/N')
-            if decisao in 'Ss':
-                print(fluxo.sim.descricao)
-            else:
-                print(fluxo.nao.descricao)
-
+        run_fluxo(fluxo)
         print(' ... ')
         sleep(3)
+
 
 
 historias = []
@@ -30,6 +31,10 @@ historias.append(FluxoDecisaoLogica(
     nao=FluxoNormal('Sua mão te deixou de castigo e você precisou ir de qualquer maneira até a cidade vender a vaca.')
 ))
 historias.append(FluxoNormal('Você sai com a vaca e no meio do caminho, encontra um senhor que lhe oferece feijões mágicos em troca da vaca.'))
-
+historias.append(FluxoDecisaoLogica(
+    descricao='Você vai querer trocar a sua vaca pelas 5 sementinhas de feijão mágico?',
+    sim=FluxoNormal('Ao chegar, sua mãe fica furiosa com a troca e atira os feijões pela janela.\nJoão vai dormir muito frustrado, mas quando desperta no dia seguinte vê que no lugar onde as\n sementes caíram nasceu um enorme pé de feijão, \ntão alto que se perde entre as nuvens.'),
+    nao=FluxoNormal('Você andou mais alguns metros e chegou até a cidade, lá você avistou o açolgue'),
+))
 
 rodar_historia(historias)
